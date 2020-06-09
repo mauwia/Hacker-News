@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import History from '../History'
 // import { withRouter } from 'react-router'
-
 class Header extends Component {
   state={tok:false}
   componentDidMount(){
@@ -20,6 +19,10 @@ class Header extends Component {
           <Link to="/create" className="ml1 no-underline black">
             new
           </Link>
+          <div className="ml1">|</div>
+        <Link to="/search" className="ml1 no-underline black">
+          search
+        </Link>
           {this.state.tok && (
             <div className="flex">
               <div className="ml1">|</div>

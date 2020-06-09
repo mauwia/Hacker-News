@@ -22,16 +22,47 @@ const FEED_QUERY=gql`{
         }
     }
 }`
+const NEW_LINKS_SUBSCRIPTION = gql`
+  subscription {
+    newLink {
+      id
+      url
+      description
+      postedBy {
+        id
+        name
+      }
+      votes {
+        id
+        user {
+          id
+        }
+      }
+    }
+  }
+`
 class LinkList extends Component {
+    subscribeToNewLinks=async(subscribeToMore)=>{
+        console.log('hello')
+        subscribeToMore({
+            document:NEW_LINKS_SUBSCRIPTION,
+            updateQuery:(prev,{subscriptionData})=>{
+                console.log(prev)
+                console.log(subscriptionData)
+            }
+        })
+    }
   render() {
     return (
         <Query query={FEED_QUERY}>
             {
-                ({loading,error,data})=>{
+                ({loading,error,data,subscribeToMore})=>{
+                    
                     if(loading) return<div>Fetching</div>
                     if(error) {
                         console.log(error)
                     }
+                    this.subscribeToNewLinks(subscribeToMore)
                     const linksToRenders=data.feed.links
                     return (
                         <div>

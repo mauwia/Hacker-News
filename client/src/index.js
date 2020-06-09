@@ -7,6 +7,9 @@ import { setContext } from 'apollo-link-context'
 import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
+import {split} from 'apollo-link'
+import {WebSocketLink} from 'apollo-link-ws'
+import {getMainDefinition} from 'apollo-utilities'
 import {Router} from 'react-router-dom'
 import History from './History' 
 const authLink = setContext((_, { headers }) => {
@@ -18,11 +21,27 @@ const authLink = setContext((_, { headers }) => {
     }
   }
 })
+const wsLink= new WebSocketLink({
+  uri: 'ws://localhost:4000',
+  options:{
+    reconnect:true,
+    connectionParams:{
+      authToken:localStorage.getItem("AUTH_TOKEN")
+    }
+  }
+})
+
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000'
 })
+const link=split(
+  ({query})=>{
+    const {kind ,operation}=getMainDefinition(query)
+    return kind==='OperationDefinition' && operation==='subscription'
+  },wsLink,authLink.concat(httpLink)
+)
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: link,
   cache: new InMemoryCache()
 })
 ReactDOM.render(

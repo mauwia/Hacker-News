@@ -4,6 +4,7 @@ import {Route} from 'react-router-dom'
 import CreateLink from './CreateLink'
 import Header from './Header'
 import Login from './Login'
+import Search from './Search'
 
 class App extends React.Component{
     render()
@@ -14,6 +15,7 @@ class App extends React.Component{
             <Route path='/' exact component={LinkList}/>
             <Route path='/create' exact component={CreateLink}/>
             <Route path='/login' exact component={Login}/>
+            <Route path='/search' exact component={Search}/>
             </div>
         </div>
     }
